@@ -74,17 +74,18 @@ class DialView @JvmOverloads constructor(
     //with floating-point coordinates.
     private val pointPosition: PointF = PointF(0.0f, 0.0f)
 
-    private var fanSpeedLowColor = 0
-    private var fanSpeedMediumColor = 0
-    private var fanSeedMaxColor = 0
+    private val fanSpeedLowColor:Int
+    private val fanSpeedMediumColor:Int
+    private val fanSpeedMaxColor:Int
 
     init {
         isClickable = true
-        context.withStyledAttributes(attrs, R.styleable.DialView) {
-            fanSpeedLowColor = getColor(R.styleable.DialView_fanColor1, 0)
-            fanSpeedMediumColor = getColor(R.styleable.DialView_fanColor2, 0)
-            fanSeedMaxColor = getColor(R.styleable.DialView_fanColor3, 0)
-        }
+
+        val typedArray = context.obtainStyledAttributes(attrs,R.styleable.DialView)
+        fanSpeedLowColor=typedArray.getColor(R.styleable.DialView_fanColor1,0)
+        fanSpeedMediumColor = typedArray.getColor(R.styleable.DialView_fanColor2,0)
+        fanSpeedMaxColor = typedArray.getColor(R.styleable.DialView_fanColor3,0)
+        typedArray.recycle()
 
         updateContentDescription()
 
@@ -147,8 +148,8 @@ class DialView @JvmOverloads constructor(
             FanSpeed.OFF -> Color.GRAY
             FanSpeed.LOW -> fanSpeedLowColor
             FanSpeed.MEDIUM -> fanSpeedMediumColor
-            FanSpeed.HIGH -> fanSeedMaxColor
-        } as Int
+            FanSpeed.HIGH -> fanSpeedMaxColor
+        }
         // Draw the dial.
         canvas.drawCircle((width / 2).toFloat(), (height / 2).toFloat(), radius, paint)
         // Draw the indicator circle.
@@ -185,7 +186,7 @@ class DialView @JvmOverloads constructor(
      * Updates the view's content description with the appropirate string for the
      * current fan speed.
      */
-    fun updateContentDescription() {
+    private fun updateContentDescription() {
         contentDescription = resources.getString(fanSpeed.label)
     }
 }
